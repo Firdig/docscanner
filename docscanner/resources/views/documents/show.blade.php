@@ -19,11 +19,16 @@
                 </div>
             </div>
 
-            @if(str_contains($doc->mime,'pdf'))
-                <iframe src="{{ $doc->file_url }}" class="w-full h-[80vh] rounded-lg border"></iframe>
-            @else
-                <img src="{{ $doc->file_url }}" class="max-h-[80vh] rounded-lg border mx-auto">
-            @endif
+           @php
+    $streamUrl = route('documents.stream', $doc);
+@endphp
+
+@if(str_contains($doc->mime,'pdf'))
+    <iframe src="{{ $streamUrl }}" class="w-full h-[80vh] rounded-lg border"></iframe>
+@else
+    <img src="{{ $streamUrl }}" class="max-h-[80vh] rounded-lg border mx-auto">
+@endif
+
         </div>
     </div>
     </div>

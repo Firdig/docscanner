@@ -79,9 +79,10 @@
                         <td class="px-3 py-2">{{ $doc->category ?? '-' }}</td>
                         <td class="px-3 py-2">{{ optional($doc->document_date)->format('d/m/Y') ?? '-' }}</td>
                         <td class="px-3 py-2">
-                            <div class="flex gap-2">
+                            <div class="flex gap-3">
                                 <a href="{{ route('documents.show',$doc) }}" class="px-2 py-1 text-sm rounded bg-sky-500 text-white">Preview</a>
                                 <a href="{{ route('documents.download',$doc) }}" class="px-2 py-1 text-sm rounded bg-amber-500 text-white">Download</a>
+                                <a href="{{ route('documents.edit',$doc) }}" class="px-2 py-1 text-sm rounded bg-sky-500 text-white">Edit</a>
                                 {{-- Edit metadata kita tambahkan di tahap berikut --}}
                                 <form action="{{ route('documents.destroy',$doc) }}" method="POST" onsubmit="return confirm('Hapus dokumen ini?')">
                                     @csrf @method('DELETE')

@@ -76,11 +76,54 @@ class DocumentController extends Controller
 
         return redirect()->route('documents.index')->with('ok', 'Dokumen berhasil diunggah.');
     }
+    public function edit(Document $document)
+{
+    $categories = Document::query()
+        ->select('category')->whereNotNull('category')
+        ->distinct()->orderBy('category')->pluck('category');
+
+    return view('documents.edit', ['doc' => $document, 'categories' => $categories]);
+}
+
+public function update(Request $req, Document $document)
+{
+    $data = $req->validate([
+        'title'         => ['required','string','max:255'],
+        'letter_number' => ['nullable','string','max:255'],
+        'document_date' => ['nullable','date'],
+        'category'      => ['nullable','string','max:100'],
+        'year'          => ['nullable','integer','min:1900','max:2100'],
+        'description'   => ['nullable','string'],
+    ]);
+
+    $document->update($data);
+
+    return redirect()->route('documents.index')->with('ok','Metadata dokumen berhasil diperbarui.');
+}
 
     public function show(Document $document)
-    {
-        return view('documents.show', ['doc' => $document]);
+{
+    if (!Storage::disk($document->disk)->exists($document->path)) {
+        return redirect()->route('documents.index')
+            ->withErrors('File tidak ditemukan di storage.'); // tampilkan flash error
     }
+    return view('documents.show', ['doc' => $document]);
+}
+public function stream(Document $document)
+{
+    if (!Storage::disk($document->disk)->exists($document->path)) {
+        abort(404, 'File tidak ditemukan di storage.');
+    }
+
+    $mime = $document->mime ?: Storage::mimeType($document->path);
+    $fullPath = Storage::disk($document->disk)->path($document->path);
+
+    // Mengirim langsung konten file ke browser (PDF/Gambar bisa di-embed)
+    return response()->file($fullPath, [
+        'Content-Type' => $mime,
+        'Cache-Control' => 'private, max-age=0, no-cache',
+    ]);
+}
 
     public function download(Document $document)
     {
