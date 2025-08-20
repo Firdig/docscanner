@@ -63,7 +63,7 @@
                         <th class="px-3 py-2 text-left">Nomor Surat</th>
                         <th class="px-3 py-2 text-left">Kategori</th>
                         <th class="px-3 py-2 text-left">Tanggal Dokumen</th>
-                        <th class="px-3 py-2 text-left w-56">aksi</th>
+                        <th class="px-3 py-2 text-center w-56">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
