@@ -1,10 +1,6 @@
 <x-app-layout>
-    {{-- HEADER BIRU --}}
-    <div class="bg-blue-600 text-white">
-        <div class="max-w-7xl mx-auto px-6 py-6">
-            <h1 class="text-3xl font-semibold">Storage</h1>
-        </div>
-    </div>
+ <x-slot name="header">Storage</x-slot>
+
 
     <div class="py-6">
     <div class="max-w-7xl mx-auto px-6 space-y-4">
