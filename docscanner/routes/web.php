@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\ScanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DocumentController;
 use Illuminate\Support\Facades\Route;
@@ -25,7 +25,7 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
 
     // Placeholder menu scan & dokumen
-    Route::view('/scan', 'scan.index')->name('scan.index');
+    // Route::view('/scan', 'scan.index')->name('scan.index');
     Route::view('/documents', 'documents.index')->name('documents.index');
     Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
     Route::get('/documents/create', [DocumentController::class, 'create'])->name('documents.create');
@@ -37,7 +37,30 @@ Route::middleware(['auth'])->group(function () {
         ->name('documents.stream');
     Route::get('/documents/{document}/edit', [DocumentController::class, 'edit'])->name('documents.edit');
     Route::put('/documents/{document}', [DocumentController::class, 'update'])->name('documents.update');
+   
+    Route::view('/scan', 'scan.index')->name('scan.index');     // <- INDEX (wizard)
+    Route::view('/scan/step1', 'scan.step1')->name('scan.step1');
+    Route::view('/scan/step2', 'scan.step2')->name('scan.step2');
+    Route::view('/scan/step3', 'scan.step3')->name('scan.step3');
 
+    Route::post('/api/scan/upload', [\App\Http\Controllers\ScanController::class,'upload'])
+        ->name('scan.upload');
 });
+
+// //Route::middleware(['auth'])->prefix('scan')->name('scan.')->group(function(){
+//     Route::get('/',                 [ScanController::class,'devices'])->name('index');     // step 1
+//     Route::post('/start',           [ScanController::class,'start'])->name('start');       // pilih device/preset
+//     Route::get('/capture/{batch}',  [ScanController::class,'capture'])->name('capture');   // step 2
+//     Route::post('/capture/{batch}/upload', [ScanController::class,'uploadPage'])->name('upload'); // terima halaman dari SDK (blob->file)
+//     Route::delete('/capture/{batch}/page/{page}', [ScanController::class,'deletePage'])->name('page.delete');
+//     Route::post('/capture/{batch}/page/{page}/replace', [ScanController::class,'replacePage'])->name('page.replace');
+
+//     Route::get('/review/{batch}',   [ScanController::class,'review'])->name('review');     // step 3
+//     Route::post('/review/{batch}/reorder', [ScanController::class,'reorder'])->name('reorder');
+
+//     Route::get('/metadata/{batch}', [ScanController::class,'metadata'])->name('metadata'); // step 4
+//     Route::post('/save/{batch}',    [ScanController::class,'save'])->name('save');
+//     Route::post('/cancel/{batch}',  [ScanController::class,'cancel'])->name('cancel');
+// });
 
 require __DIR__.'/auth.php';
