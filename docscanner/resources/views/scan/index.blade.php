@@ -9,12 +9,10 @@
       <div id="p1" class="px-3 py-1 rounded-full border">Step 1</div>
       <span>—</span>
       <div id="p2" class="px-3 py-1 rounded-full border">Step 2</div>
-      <span>—</span>
-      <div id="p3" class="px-3 py-1 rounded-full border">Step 3</div>
     </div>
 
     <!-- Kartu Langkah -->
-    <div class="grid md:grid-cols-3 gap-4">
+    <div class="grid md:grid-cols-2 gap-4">
       <!-- Step 1 -->
       <div class="p-5 rounded-2xl border bg-white flex flex-col">
         <div class="text-xs uppercase tracking-wide text-gray-500 mb-1">Step 1</div>
@@ -29,26 +27,16 @@
       <!-- Step 2 -->
       <div class="p-5 rounded-2xl border bg-white flex flex-col">
         <div class="text-xs uppercase tracking-wide text-gray-500 mb-1">Step 2</div>
-        <h3 class="text-lg font-semibold">Review Hasil</h3>
-        <p class="text-sm text-gray-600 mt-1">Tinjau semua halaman & pastikan sudah benar.</p>
-        <div class="mt-auto pt-4 flex items-center justify-between">
-          <span id="s2badge" class="text-xs px-2 py-1 rounded bg-gray-100">Terkunci</span>
-          <a id="goStep2" href="{{ route('scan.step2') }}"
-             class="px-4 py-2 rounded-xl bg-green-600 text-white opacity-40 pointer-events-none">Lanjut</a>
-        </div>
-      </div>
-
-      <!-- Step 3 -->
-      <div class="p-5 rounded-2xl border bg-white flex flex-col">
-        <div class="text-xs uppercase tracking-wide text-gray-500 mb-1">Step 3</div>
         <h3 class="text-lg font-semibold">Metadata & Simpan</h3>
         <p class="text-sm text-gray-600 mt-1">Isi judul, nomor, tanggal, kategori, tahun, deskripsi.</p>
         <div class="mt-auto pt-4 flex items-center justify-between">
-          <span id="s3badge" class="text-xs px-2 py-1 rounded bg-gray-100">Terkunci</span>
-          <a id="goStep3" href="{{ route('scan.step3') }}"
-             class="px-4 py-2 rounded-xl bg-emerald-600 text-white opacity-40 pointer-events-none">Simpan</a>
+          <span id="s2badge" class="text-xs px-2 py-1 rounded bg-gray-100">Terkunci</span>
+          <a id="goStep2" href="{{ route('scan.step2') }}"
+             class="px-4 py-2 rounded-xl bg-green-600 text-white opacity-40 pointer-events-none">Simpan</a>
         </div>
       </div>
+
+    
     </div>
 
     <!-- Aksi tambahan -->

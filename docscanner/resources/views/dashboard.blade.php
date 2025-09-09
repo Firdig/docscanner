@@ -72,11 +72,16 @@
             <div class="mt-8 grid sm:grid-cols-3 gap-4">
                 <div class="rounded-xl border border-slate-200 bg-white p-4">
                     <p class="text-sm text-slate-500">Total Dokumen</p>
-                    <p class="mt-1 text-2xl font-semibold">—</p>
+                    <p class="mt-1 text-2xl font-semibold">{{ \App\Models\Document::count() }}</p>
                 </div>
                 <div class="rounded-xl border border-slate-200 bg-white p-4">
                     <p class="text-sm text-slate-500">Terakhir Upload</p>
-                    <p class="mt-1 text-base">—</p>
+                    <p class="mt-1 text-base">
+                        @php
+                            $lastDoc = \App\Models\Document::latest()->first();
+                        @endphp
+                        {{ $lastDoc ? $lastDoc->created_at->diffForHumans() : 'Belum ada' }}
+                    </p>
                 </div>
                 <div class="rounded-xl border border-slate-200 bg-white p-4">
                     <p class="text-sm text-slate-500">Status Scanner</p>
@@ -86,14 +91,76 @@
                 </div>
             </div>
 
-            <div class="mt-8 rounded-2xl border border-slate-200 bg-white p-5">
-                <h4 class="font-semibold text-gray-800 mb-3">Riwayat Aktivitas</h4>
-                <ul class="text-sm text-slate-600 space-y-2">
-                    <li>— UI only</li>
-                    <li>— UI only</li>
-                    <li>— UI only</li>
-                </ul>
+            {{-- Riwayat Aktivitas Real --}}
+            <div class="mt-8 rounded-2xl border border-slate-200 bg-white">
+                <div class="p-5 border-b border-slate-200 flex items-center justify-between">
+                    <h4 class="font-semibold text-gray-800">Riwayat Aktivitas Terbaru</h4>
+                    <a href="{{ route('activity-logs.index') }}" 
+                       class="text-sm text-indigo-600 hover:text-indigo-800">
+                        Lihat Semua
+                    </a>
+                </div>
+                
+                <div id="recent-activities" class="divide-y divide-slate-100">
+                    {{-- Activities akan dimuat via JavaScript --}}
+                    <div class="p-5 text-center text-slate-500">
+                        <div class="animate-pulse">Memuat aktivitas...</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    {{-- JavaScript untuk load recent activities --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadRecentActivities();
+        });
+
+        function loadRecentActivities() {
+            fetch('/api/activity-logs/recent?limit=5')
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById('recent-activities');
+                    
+                    if (data.activities && data.activities.length > 0) {
+                        container.innerHTML = '';
+                        
+                        data.activities.forEach(activity => {
+                            const activityHtml = `
+                                <div class="p-4 hover:bg-slate-50 transition-colors">
+                                    <div class="flex items-start gap-3">
+                                        <span class="flex-shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-full ${activity.color_class} text-sm">
+                                            ${activity.icon}
+                                        </span>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-sm text-gray-900">${activity.description}</p>
+                                            <p class="text-xs text-slate-500 mt-1">${activity.created_at_human}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            container.insertAdjacentHTML('beforeend', activityHtml);
+                        });
+                    } else {
+                        container.innerHTML = `
+                            <div class="p-5 text-center text-slate-500">
+                                <p class="text-sm">Belum ada aktivitas</p>
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading activities:', error);
+                    document.getElementById('recent-activities').innerHTML = `
+                        <div class="p-5 text-center text-red-500">
+                            <p class="text-sm">Gagal memuat aktivitas</p>
+                        </div>
+                    `;
+                });
+        }
+
+        // Auto refresh setiap 30 detik
+        setInterval(loadRecentActivities, 30000);
+    </script>
 </x-app-layout>

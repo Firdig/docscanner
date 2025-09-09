@@ -42,10 +42,18 @@ Route::middleware(['auth'])->group(function () {
     Route::view('/scan/step1', 'scan.step1')->name('scan.step1');
     Route::view('/scan/step2', 'scan.step2')->name('scan.step2');
     Route::view('/scan/step3', 'scan.step3')->name('scan.step3');
+    // Activity Logs
+    Route::get('/activity-logs', [App\Http\Controllers\ActivityLogController::class, 'index'])->name('activity-logs.index');
+    Route::get('/activity-logs/{activityLog}', [App\Http\Controllers\ActivityLogController::class, 'show'])->name('activity-logs.show');
+    Route::get('/activity-logs/export', [App\Http\Controllers\ActivityLogController::class, 'export'])->name('activity-logs.export');
+    
+    // API routes untuk dashboard
+    Route::get('/api/activity-logs/recent', [App\Http\Controllers\ActivityLogController::class, 'recent']);
 
     Route::post('/api/scan/upload', [\App\Http\Controllers\ScanController::class,'upload'])
         ->name('scan.upload');
 });
+
 
 // //Route::middleware(['auth'])->prefix('scan')->name('scan.')->group(function(){
 //     Route::get('/',                 [ScanController::class,'devices'])->name('index');     // step 1

@@ -1,95 +1,114 @@
 <x-app-layout>
   <x-slot name="header">
-    <h2 class="font-semibold text-xl text-gray-800">Step 1: Scan Dokumen</h2>
-    <p class="text-sm text-gray-500">Gunakan mode Simple (UI driver) bila advanced tidak didukung oleh driver.</p>
-  </x-slot>
+  <h2 class="font-semibold text-xl text-gray-800">Step 1: Scan Dokumen</h2>
+  
+</x-slot>
 
-  <div class="max-w-7xl mx-auto p-6 space-y-6">
+<div class="max-w-7xl mx-auto p-6 space-y-6">
 
-    <div class="grid lg:grid-cols-3 gap-5">
-      <!-- KIRI: Panel kontrol -->
-      <div class="p-4 bg-white border rounded-2xl space-y-4">
-        <div class="space-y-2">
-          <div class="text-xs uppercase tracking-wide text-gray-500">Mode</div>
-          <div class="flex items-center gap-4">
-            <label class="inline-flex items-center gap-2">
-              <input type="radio" name="scanMode" value="simple" checked>
-              <span>Simple (UI Driver)</span>
-            </label>
-            <!-- <label class="inline-flex items-center gap-2">
-              <input type="radio" name="scanMode" value="advanced">
-              <span>Advanced (Silent)</span>
-            </label> -->
-          </div>
-        </div>
-
-        <!-- <div id="advancedFields" class="space-y-3 hidden">
-          <div>
-            <label class="text-sm">Pilih Device</label>
-            <select id="deviceSelect" class="w-full border rounded p-2">
-              <option value="">(Memuat...)</option>
-            </select>
-          </div>
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <label class="text-sm">DPI</label>
-              <select id="dpi" class="w-full border rounded p-2">
-                <option>200</option>
-                <option selected>300</option>
-                <option>600</option>
-              </select>
-            </div>
-            <div>
-              <label class="text-sm">Mode Warna</label>
-              <select id="pixelType" class="w-full border rounded p-2">
-                <option value="2" selected>Color</option>
-                <option value="1">Gray</option>
-                <option value="0">B/W</option>
-              </select>
-            </div>
-          </div>
-          <p class="text-xs text-gray-500">Catatan: beberapa driver (WIA) menolak B/W atau DPI tertentu.</p>
-        </div> -->
-
-        <div class="grid grid-cols-2 gap-2">
-          <button id="btnScan" class="py-2 rounded-xl bg-blue-600 text-white">Scan</button>
-          <!-- <button id="btnSelectSource" class="py-2 rounded-xl border">Pilih Sumber…</button> -->
-          <button id="btnDeletePage" class="py-2 rounded-xl border">Hapus Halaman</button>
-          <button id="btnClear" class="py-2 rounded-xl border">Clear Semua</button>
-          <button id="btnLoadFile" class="py-2 rounded-xl border col-span-2">Muat dari File (uji alur)</button>
-        </div>
-
-        <div class="text-xs text-gray-500">
-          <div id="status">Status: menunggu WebTWAIN…</div>
+  <div class="grid lg:grid-cols-3 gap-5">
+    <!-- KIRI: Panel kontrol -->
+    <div class="p-4 bg-white border rounded-2xl space-y-5">
+      <!-- Mode -->
+      <div class="space-y-2">
+        <div class="text-xs uppercase tracking-wide text-gray-500">Mode</div>
+        <div class="flex items-center gap-4">
+          <label class="inline-flex items-center gap-2">
+            <input type="radio" name="scanMode" value="simple" checked>
+            <span class="text-sm text-gray-800">Simple (UI Driver)</span>
+          </label>
+          {{-- Opsi advanced disembunyikan sementara --}}
+          {{-- 
+          <label class="inline-flex items-center gap-2">
+            <input type="radio" name="scanMode" value="advanced">
+            <span class="text-sm text-gray-800">Advanced (Silent)</span>
+          </label>
+          --}}
         </div>
       </div>
 
-      <!-- KANAN: Preview + toolbar -->
-      <div class="lg:col-span-2 p-4 bg-white border rounded-2xl">
-        <div class="flex items-center justify-between mb-2">
-          <div class="font-semibold">Preview</div>
-          <div class="flex items-center gap-2">
-            <button id="btnPrev" class="px-3 py-1 border rounded">Prev</button>
-            <button id="btnNextPage" class="px-3 py-1 border rounded">Next</button>
-            <span id="pageInfo" class="text-sm text-gray-600">—</span>
-            <span class="mx-2 w-px h-5 bg-gray-300"></span>
-            <!-- <button id="zoomOut" class="px-3 py-1 border rounded">−</button>
-            <button id="zoomIn"  class="px-3 py-1 border rounded">+</button> -->
-            <button id="rotateLeft"  class="px-3 py-1 border rounded">⟲</button>
-            <button id="rotateRight" class="px-3 py-1 border rounded">⟳</button>
-            <button id="btnDownloadPdf" class="px-3 py-1 border rounded">Download PDF</button>
-          </div>
+      <!-- Aksi -->
+      <div class="grid grid-cols-2 gap-2">
+        <button id="btnScan" data-requires-sdk
+          class="inline-flex items-center justify-center rounded-xl text-sm font-semibold px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 disabled:opacity-50 disabled:cursor-not-allowed">
+          Scan
+        </button>
+
+        {{-- <button id="btnSelectSource" class="inline-flex items-center justify-center rounded-xl text-sm font-semibold px-4 py-2 border hover:bg-gray-50">Pilih Sumber…</button> --}}
+
+        <button id="btnDeletePage" data-requires-page
+          class="inline-flex items-center justify-center rounded-xl text-sm font-semibold px-4 py-2 border hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+          Hapus Halaman
+        </button>
+
+        <button id="btnClear" data-requires-sdk
+          class="inline-flex items-center justify-center rounded-xl text-sm font-semibold px-4 py-2 border hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+          Clear Semua
+        </button>
+
+        <button id="btnLoadFile" class="col-span-2 inline-flex items-center justify-center rounded-xl text-sm font-semibold px-4 py-2 border hover:bg-gray-50">
+          Muat dari File (uji alur)
+        </button>
+      </div>
+
+      <!-- Status -->
+      <div class="text-xs text-gray-600" role="status" aria-live="polite">
+        <div id="status" class="inline-flex items-center gap-2">
+          <span id="statusDot" class="inline-block w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+          <span id="statusText">Status: menunggu WebTWAIN…</span>
         </div>
-        <div id="dwtcontrolContainer" class="w-full h-[520px] border rounded bg-white"></div>
       </div>
     </div>
 
-    <div class="flex justify-end">
-      <button id="btnGoReview" class="px-5 py-2 rounded-xl bg-emerald-600 text-white">
-        Lanjut ke Review (Step 2)
-      </button>
+    <!-- KANAN: Preview + toolbar -->
+    <div class="lg:col-span-2 p-4 bg-white border rounded-2xl">
+      <div class="flex items-center justify-between mb-3">
+        <div class="font-semibold">Preview</div>
+        <div class="flex items-center gap-2">
+          <button id="btnPrev" data-requires-page
+            class="px-3 py-1 text-sm border rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" title="Halaman sebelumnya">
+            Prev
+          </button>
+          <button id="btnNextPage" data-requires-page
+            class="px-3 py-1 text-sm border rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" title="Halaman berikutnya">
+            Next
+          </button>
+          <span id="pageInfo" class="text-sm text-gray-600 select-none">—</span>
+
+          <span class="mx-2 w-px h-5 bg-gray-300"></span>
+
+          <button id="rotateLeft" data-requires-page
+            class="px-3 py-1 text-sm border rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" title="Putar kiri (⟲)">
+            ⟲
+          </button>
+          <button id="rotateRight" data-requires-page
+            class="px-3 py-1 text-sm border rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" title="Putar kanan (⟳)">
+            ⟳
+          </button>
+
+          <button id="btnDownloadPdf" data-requires-page
+            class="px-3 py-1 text-sm border rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" title="Unduh sebagai PDF">
+            Download PDF
+          </button>
+        </div>
+      </div>
+
+      <div id="dwtcontrolContainer"
+           class="w-full h-[520px] border rounded bg-white overflow-hidden">
+        {{-- Kontainer WebTWAIN akan render canvas/preview di sini --}}
+      </div>
     </div>
   </div>
+
+  <div class="flex justify-end">
+    <button id="btnGoReview"
+      class="px-5 py-2 rounded-xl bg-emerald-600 text-white font-semibold hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed"
+      enabled>
+      Lanjut ke Review (Step 2)
+    </button>
+  </div>
+</div>
+
 
 
   <!-- WEBTWAIN -->
@@ -143,18 +162,18 @@
   }
 
   // Info halaman (otomatis update tiap 400ms) — tetap
-  function refreshPageInfo() {
-    if (!DWTObject) {
-      const el = document.getElementById('pageInfo');
-      if (el) el.textContent = '—';
-      return;
-    }
-    const total = DWTObject.HowManyImagesInBuffer || 0;
-    const idx   = (DWTObject.CurrentImageIndexInBuffer ?? -1);
-    const el = document.getElementById('pageInfo');
-    if (el) el.textContent = total > 0 ? Halaman ${idx + 1} / ${total} : '—';
-  }
-  setInterval(refreshPageInfo, 400);
+  // function refreshPageInfo() {
+  //   if (!DWTObject) {
+  //     const el = document.getElementById('pageInfo');
+  //     if (el) el.textContent = '—';
+  //     return;
+  //   }
+  //   const total = DWTObject.HowManyImagesInBuffer || 0;
+  //   const idx   = (DWTObject.CurrentImageIndexInBuffer ?? -1);
+  //   const el = document.getElementById('pageInfo');
+  //   if (el) el.textContent = total > 0 ? Halaman ${idx + 1} / ${total} : '—';
+  // }
+  // setInterval(refreshPageInfo, 400);
 
   // [CHANGE] Daftarkan handler siap lebih awal, sebelum Load()
   Dynamsoft.DWT.RegisterEvent("OnWebTwainReady", async function () {

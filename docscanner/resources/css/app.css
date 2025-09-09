@@ -1,3 +1,46 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  /* Button */
+  .btn{@apply inline-flex items-center gap-2 font-semibold rounded-xl px-4 py-2 transition
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
+                disabled:opacity-50 disabled:cursor-not-allowed;}
+  .btn-primary{@apply btn bg-blue-600 text-white hover:bg-blue-700 focus-visible:ring-blue-600;}
+  .btn-secondary{@apply btn bg-gray-100 text-gray-900 hover:bg-gray-200 focus-visible:ring-gray-400;}
+  .btn-success{@apply btn bg-emerald-600 text-white hover:bg-emerald-700 focus-visible:ring-emerald-600;}
+  .btn-danger{@apply btn bg-rose-600 text-white hover:bg-rose-700 focus-visible:ring-rose-600;}
+  .btn-ghost{@apply btn bg-transparent text-gray-700 hover:bg-gray-100;}
+
+  /* Input + Select + Textarea */
+  .field{@apply w-full;}
+  .label{@apply block text-sm font-medium text-gray-700 mb-1;}
+  .control{@apply w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900
+                   shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30;}
+  .hint{@apply mt-1 text-xs text-gray-500;}
+  .error{@apply mt-1 text-xs text-rose-600;}
+  .invalid .control{@apply border-rose-500 focus:border-rose-500 focus:ring-rose-500/30;}
+
+  /* Card */
+  .card{@apply bg-white rounded-2xl border border-gray-200 shadow-sm;}
+  .card-body{@apply p-4 md:p-6;}
+  .card-title{@apply text-lg font-semibold text-gray-800;}
+
+  /* Table */
+  .table-wrap{@apply overflow-auto rounded-xl border border-gray-200 bg-white;}
+  table.table{@apply w-full border-collapse text-sm;}
+  .table thead th{@apply sticky top-0 bg-gray-50 text-gray-600 font-semibold text-left
+                         border-b border-gray-200 px-3 py-2;}
+  .table tbody td{@apply border-b border-gray-100 px-3 py-2 align-middle;}
+  .table tbody tr:hover{@apply bg-gray-50;}
+
+  /* Toolbar */
+  .toolbar{@apply flex flex-wrap items-center gap-2;}
+  .spacer{@apply grow;}
+  
+  /* Badge */
+  .badge{@apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;}
+  .badge-green{@apply badge bg-emerald-100 text-emerald-700;}
+  .badge-blue{@apply badge bg-blue-100 text-blue-700;}
+}

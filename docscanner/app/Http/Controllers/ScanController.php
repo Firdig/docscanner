@@ -6,9 +6,49 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Document;
+use App\Services\ActivityLogger;
 
 class ScanController extends Controller
 {
+    protected ActivityLogger $activityLogger;
+
+    public function __construct()
+    {
+        $this->activityLogger = new ActivityLogger();
+    }
+
+    public function index()
+    {
+        // Log activity - akses halaman scan
+        $this->activityLogger->logScan('access_scan_page');
+        
+        return view('scan.index');
+    }
+
+    public function step1()
+    {
+        // Log activity - akses step 1 scan
+        $this->activityLogger->logScan('access_step1');
+        
+        return view('scan.step1');
+    }
+
+    public function step2()
+    {
+        // Log activity - akses step 2 scan
+        $this->activityLogger->logScan('access_step2');
+        
+        return view('scan.step2');
+    }
+
+    public function step3()
+    {
+        // Log activity - akses step 3 scan
+        $this->activityLogger->logScan('access_step3');
+        
+        return view('scan.step3');
+    }
+
     public function upload(Request $request)
     {
         $data = $request->validate([
@@ -45,10 +85,43 @@ class ScanController extends Controller
             'size'          => $file->getSize(),
         ]);
 
+        // Log activity - upload scan result
+        $this->activityLogger->logScan('upload', null, [
+            'document_id' => $doc->id,
+            'document_title' => $doc->title,
+            'file_size' => $file->getSize(),
+            'file_type' => $file->getMimeType(),
+            'original_name' => $file->getClientOriginalName(),
+        ]);
+
         return response()->json([
             'message'      => 'Uploaded',
             'document_id'  => $doc->id,
-            'url'          => $doc->url, // dari accessor
+            'url'          => $doc->file_url, // dari accessor
         ]);
+    }
+
+    // Method tambahan untuk batch scanning (jika diperlukan)
+    public function startBatch(Request $request)
+    {
+        // Logic untuk memulai batch scan
+        $this->activityLogger->logScan('start', null, [
+            'device' => $request->input('device'),
+            'dpi' => $request->input('dpi'),
+            'color_mode' => $request->input('color_mode'),
+        ]);
+
+        return response()->json(['message' => 'Batch scan started']);
+    }
+
+    public function cancelBatch(Request $request)
+    {
+        // Logic untuk cancel batch scan
+        $this->activityLogger->logScan('cancel', null, [
+            'batch_id' => $request->input('batch_id'),
+            'reason' => 'User cancelled',
+        ]);
+
+        return response()->json(['message' => 'Batch scan cancelled']);
     }
 }

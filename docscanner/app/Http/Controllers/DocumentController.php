@@ -3,12 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Document;
+use App\Services\ActivityLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class DocumentController extends Controller
 {
+    protected ActivityLogger $activityLogger;
+
+    public function __construct()
+    {
+        $this->activityLogger = new ActivityLogger();
+    }
+
     // STORAGE (INDEX) — list + search + filter
     public function index(Request $req)
     {
@@ -37,6 +45,16 @@ class DocumentController extends Controller
             ->select('category')->whereNotNull('category')
             ->distinct()->orderBy('category')->pluck('category');
 
+        // Log activity - akses halaman dokumen
+        $searchParams = collect(['q' => $q, 'category' => $category, 'from' => $from, 'to' => $to])
+            ->filter()
+            ->toArray();
+            
+        $this->activityLogger->logDocument('read', 
+            new Document(['title' => 'Daftar Dokumen']), 
+            ['search_params' => $searchParams, 'total_results' => $docs->total()]
+        );
+
         return view('documents.index', compact('docs','categories','q','category','from','to'));
     }
 
@@ -46,6 +64,9 @@ class DocumentController extends Controller
         $categories = Document::query()
             ->select('category')->whereNotNull('category')
             ->distinct()->orderBy('category')->pluck('category');
+
+        // Log activity - akses form upload
+        $this->activityLogger->log('document', 'access_create_form', 'mengakses form upload dokumen');
 
         return view('documents.create', compact('categories'));
     }
@@ -74,66 +95,104 @@ class DocumentController extends Controller
             'year' => $data['year'] ?? ($data['document_date'] ? date('Y', strtotime($data['document_date'])) : null),
         ]);
 
+        // Log akan otomatis tercatat melalui Loggable trait (created event)
+        // Tapi kita bisa menambah detail tambahan
+        $this->activityLogger->logDocument('create', $doc, [
+            'file_size' => $file->getSize(),
+            'file_type' => $file->getMimeType(),
+            'original_name' => $file->getClientOriginalName(),
+        ]);
+
         return redirect()->route('documents.index')->with('ok', 'Dokumen berhasil diunggah.');
     }
+
     public function edit(Document $document)
-{
-    $categories = Document::query()
-        ->select('category')->whereNotNull('category')
-        ->distinct()->orderBy('category')->pluck('category');
+    {
+        $categories = Document::query()
+            ->select('category')->whereNotNull('category')
+            ->distinct()->orderBy('category')->pluck('category');
 
-    return view('documents.edit', ['doc' => $document, 'categories' => $categories]);
-}
+        // Log activity - akses form edit
+        $this->activityLogger->logDocument('access_edit_form', $document);
 
-public function update(Request $req, Document $document)
-{
-    $data = $req->validate([
-        'title'         => ['required','string','max:255'],
-        'letter_number' => ['nullable','string','max:255'],
-        'document_date' => ['nullable','date'],
-        'category'      => ['nullable','string','max:100'],
-        'year'          => ['nullable','integer','min:1900','max:2100'],
-        'description'   => ['nullable','string'],
-    ]);
+        return view('documents.edit', ['doc' => $document, 'categories' => $categories]);
+    }
 
-    $document->update($data);
+    public function update(Request $req, Document $document)
+    {
+        $oldData = $document->toArray();
 
-    return redirect()->route('documents.index')->with('ok','Metadata dokumen berhasil diperbarui.');
-}
+        $data = $req->validate([
+            'title'         => ['required','string','max:255'],
+            'letter_number' => ['nullable','string','max:255'],
+            'document_date' => ['nullable','date'],
+            'category'      => ['nullable','string','max:100'],
+            'year'          => ['nullable','integer','min:1900','max:2100'],
+            'description'   => ['nullable','string'],
+        ]);
+
+        $document->update($data);
+
+        // Log akan otomatis tercatat melalui Loggable trait (updated event)
+        // dengan detail old_values dan new_values
+
+        return redirect()->route('documents.index')->with('ok','Metadata dokumen berhasil diperbarui.');
+    }
 
     public function show(Document $document)
-{
-    if (!Storage::disk($document->disk)->exists($document->path)) {
-        return redirect()->route('documents.index')
-            ->withErrors('File tidak ditemukan di storage.'); // tampilkan flash error
-    }
-    return view('documents.show', ['doc' => $document]);
-}
-public function stream(Document $document)
-{
-    if (!Storage::disk($document->disk)->exists($document->path)) {
-        abort(404, 'File tidak ditemukan di storage.');
+    {
+        if (!Storage::disk($document->disk)->exists($document->path)) {
+            return redirect()->route('documents.index')
+                ->withErrors('File tidak ditemukan di storage.');
+        }
+
+        // Log activity - melihat detail dokumen
+        $document->logViewed();
+
+        return view('documents.show', ['doc' => $document]);
     }
 
-    $mime = $document->mime ?: Storage::mimeType($document->path);
-    $fullPath = Storage::disk($document->disk)->path($document->path);
+    public function stream(Document $document)
+    {
+        if (!Storage::disk($document->disk)->exists($document->path)) {
+            abort(404, 'File tidak ditemukan di storage.');
+        }
 
-    // Mengirim langsung konten file ke browser (PDF/Gambar bisa di-embed)
-    return response()->file($fullPath, [
-        'Content-Type' => $mime,
-        'Cache-Control' => 'private, max-age=0, no-cache',
-    ]);
-}
+        $mime = $document->mime ?: Storage::mimeType($document->path);
+        $fullPath = Storage::disk($document->disk)->path($document->path);
+
+        // Log activity - streaming/preview dokumen
+        $document->logStreamed();
+
+        // Mengirim langsung konten file ke browser (PDF/Gambar bisa di-embed)
+        return response()->file($fullPath, [
+            'Content-Type' => $mime,
+            'Cache-Control' => 'private, max-age=0, no-cache',
+        ]);
+    }
 
     public function download(Document $document)
     {
-        return Storage::disk($document->disk)->download($document->path, ($document->title ?: 'document').'.'.pathinfo($document->path, PATHINFO_EXTENSION));
+        // Log activity - download dokumen
+        $document->logDownloaded();
+
+        return Storage::disk($document->disk)->download(
+            $document->path, 
+            ($document->title ?: 'document').'.'.pathinfo($document->path, PATHINFO_EXTENSION)
+        );
     }
 
     public function destroy(Document $document)
     {
+        // Log activity sebelum delete (karena setelah delete model sudah hilang)
+        $this->activityLogger->logDocument('delete', $document, [
+            'file_path' => $document->path,
+            'file_size' => $document->size,
+        ]);
+
         Storage::disk($document->disk)->delete($document->path);
         $document->delete();
+        
         return back()->with('ok', 'Dokumen dihapus.');
     }
 }
