@@ -5,10 +5,12 @@
 
   <div class="max-w-6xl mx-auto p-6 space-y-6">
     <!-- Progress Ringkas -->
-    <div id="progress" class="flex items-center gap-3 text-sm">
+    <div id="progress" class="flex items-center gap-2 text-sm">
       <div id="p1" class="px-3 py-1 rounded-full border">Step 1</div>
       <span>—</span>
       <div id="p2" class="px-3 py-1 rounded-full border">Step 2</div>
+      <!-- <span>—</span>
+      <div id="p3" class="px-3 py-1 rounded-full border">Step 3</div> -->
     </div>
 
     <!-- Kartu Langkah -->
@@ -36,7 +38,7 @@
         </div>
       </div>
 
-    
+     
     </div>
 
     <!-- Aksi tambahan -->
@@ -64,32 +66,32 @@
 
     const s1badge = document.getElementById('s1badge');
     const s2badge = document.getElementById('s2badge');
-    const s3badge = document.getElementById('s3badge');
+    //const s3badge = document.getElementById('s3badge');
 
     const p1 = document.getElementById('p1');
     const p2 = document.getElementById('p2');
-    const p3 = document.getElementById('p3');
+    //const p3 = document.getElementById('p3');
 
     const goStep2 = document.getElementById('goStep2');
-    const goStep3 = document.getElementById('goStep3');
+    //const goStep3 = document.getElementById('goStep3');
 
     if (pdfBase64) {
       // Sudah ada hasil scan sementara → Step 2 & 3 aktif
       s1badge.textContent = 'Selesai (sementara)';
       s2badge.textContent = 'Siap ditinjau';
-      s3badge.textContent = 'Siap disimpan';
+      //s3badge.textContent = 'Siap disimpan';
 
       goStep2.classList.remove('opacity-40','pointer-events-none');
-      goStep3.classList.remove('opacity-40','pointer-events-none');
+      //goStep3.classList.remove('opacity-40','pointer-events-none');
 
-      mark(p1, 'done'); mark(p2, 'active'); mark(p3, 'idle');
+      mark(p1, 'done'); mark(p2, 'active'); //mark(p3, 'idle');
     } else {
       // Belum ada hasil → Step 2 & 3 terkunci
       s1badge.textContent = 'Belum mulai';
       s2badge.textContent = 'Terkunci';
-      s3badge.textContent = 'Terkunci';
+      //s3badge.textContent = 'Terkunci';
 
-      mark(p1, 'active'); mark(p2, 'locked'); mark(p3, 'locked');
+      mark(p1, 'active'); mark(p2, 'locked'); //mark(p3, 'locked');
     }
 
     // Mulai ulang alur: hapus hasil sementara

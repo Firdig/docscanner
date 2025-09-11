@@ -4,17 +4,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DocumentController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-
 Route::get('/', function () {
     return redirect()->route('dashboard');
 });
@@ -41,7 +30,13 @@ Route::middleware(['auth'])->group(function () {
     Route::view('/scan', 'scan.index')->name('scan.index');     // <- INDEX (wizard)
     Route::view('/scan/step1', 'scan.step1')->name('scan.step1');
     Route::view('/scan/step2', 'scan.step2')->name('scan.step2');
-    Route::view('/scan/step3', 'scan.step3')->name('scan.step3');
+    //Route::view('/scan/step3', 'scan.step3')->name('scan.step3');
+
+    // API routes for scan - fix the route path
+    Route::post('/api/scan/upload', [ScanController::class, 'upload'])->name('scan.upload');
+    Route::post('/api/scan/start-batch', [ScanController::class, 'startBatch'])->name('scan.start-batch');
+    Route::post('/api/scan/cancel-batch', [ScanController::class, 'cancelBatch'])->name('scan.cancel-batch');
+
     // Activity Logs
     Route::get('/activity-logs', [App\Http\Controllers\ActivityLogController::class, 'index'])->name('activity-logs.index');
     Route::get('/activity-logs/{activityLog}', [App\Http\Controllers\ActivityLogController::class, 'show'])->name('activity-logs.show');
@@ -50,8 +45,10 @@ Route::middleware(['auth'])->group(function () {
     // API routes untuk dashboard
     Route::get('/api/activity-logs/recent', [App\Http\Controllers\ActivityLogController::class, 'recent']);
 
-    Route::post('/api/scan/upload', [\App\Http\Controllers\ScanController::class,'upload'])
-        ->name('scan.upload');
+    // Route::post('/scan/upload', [ScanController::class, 'upload'])->name('scan.upload');
+    // Route::post('/api/scan/upload', [\App\Http\Controllers\ScanController::class,'upload'])
+    //     ->name('scan.upload');
+        
 });
 
 

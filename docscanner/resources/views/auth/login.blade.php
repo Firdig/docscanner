@@ -58,10 +58,10 @@
         </label>
 
       @if (Route::has('password.request'))
-        <a class="underline text-gray-600 hover:text-gray-900"
+        <!-- <a class="underline text-gray-600 hover:text-gray-900"
           href="{{ route('password.request') }}">
           Forgot your password?
-        </a>
+        </a> -->
       @endif
 
       {{-- Tambahan: Link ke Register (tanpa ubah style keseluruhan) --}}

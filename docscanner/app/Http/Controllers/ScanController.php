@@ -50,16 +50,24 @@ class ScanController extends Controller
     }
 
     public function upload(Request $request)
-    {
-        $data = $request->validate([
-            'file'          => ['required','file','max:102400'], // <=100MB
-            'title'         => ['required','string','max:255'],
-            'letter_number' => ['nullable','string','max:255'],
-            'document_date' => ['nullable','date'],
-            'category'      => ['nullable','string','max:255'],
-            'year'          => ['nullable','digits:4'],
-            'description'   => ['nullable','string'],
-        ]);
+{
+    // Cek cepat kalau PHP sudah menolak file (UPLOAD_ERR_INI_SIZE, dll)
+    if (!$request->hasFile('file')) {
+        return response()->json([
+            'message' => 'The file failed to upload.',
+            'hint' => 'Kemungkinan besar melampaui upload_max_filesize/post_max_size atau FormData tidak mengirim field bernama "file".'
+        ], 422);
+    }
+
+    $data = $request->validate([
+        'file'          => ['required','file','mimetypes:application/pdf','max:102400'], // 100 MB
+        'title'         => ['required','string','max:255'],
+        'letter_number' => ['nullable','string','max:255'],
+        'document_date' => ['nullable','date'],
+        'category'      => ['nullable','string','max:255'],
+        'year'          => ['nullable','digits:4'],
+        'description'   => ['nullable','string'],
+    ]);
 
         $disk = 'public'; // sesuai default di tabelmu
         $file = $data['file'];

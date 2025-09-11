@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name', 'DocScanner') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+     <meta name="csrf-token" content="{{ csrf_token() }}">
+    @stack('meta')
 </head>
 <body class="font-sans antialiased bg-gray-50 text-gray-900">
 <div x-data="{ sidebarOpen: false }" class="min-h-screen">
