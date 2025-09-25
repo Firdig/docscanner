@@ -454,53 +454,53 @@
     });
 
     // Download PDF button
-    document.getElementById("btnDownloadPdf").addEventListener("click", () => {
-      if (!DWTObject || DWTObject.HowManyImagesInBuffer === 0) {
-        alert("Belum ada halaman.");
-        return;
-      }
+    // document.getElementById("btnDownloadPdf").addEventListener("click", () => {
+    //   if (!DWTObject || DWTObject.HowManyImagesInBuffer === 0) {
+    //     alert("Belum ada halaman.");
+    //     return;
+    //   }
 
-      const totalPages = DWTObject.HowManyImagesInBuffer;
-      const estimatedSize = totalPages * getEstimatedPageSize(document.getElementById('scanQuality').value);
+    //   const totalPages = DWTObject.HowManyImagesInBuffer;
+    //   const estimatedSize = totalPages * getEstimatedPageSize(document.getElementById('scanQuality').value);
       
-      if (estimatedSize > 10 * 1024 * 1024) {
-        if (!confirm(`File berukuran besar (~${(estimatedSize/1024/1024).toFixed(1)}MB). Lanjutkan download?`)) {
-          return;
-        }
-      }
+    //   if (estimatedSize > 10 * 1024 * 1024) {
+    //     if (!confirm(`File berukuran besar (~${(estimatedSize/1024/1024).toFixed(1)}MB). Lanjutkan download?`)) {
+    //       return;
+    //     }
+    //   }
 
-      setStatus("Membuat PDF...", 'info');
-      showProgress(true, 'Generating PDF...', 0);
+    //   setStatus("Membuat PDF...", 'info');
+    //   showProgress(true, 'Generating PDF...', 0);
 
-      const indices = [];
-      for (let i = 0; i < totalPages; i++) {
-        indices.push(i);
-      }
+    //   const indices = [];
+    //   for (let i = 0; i < totalPages; i++) {
+    //     indices.push(i);
+    //   }
 
-      DWTObject.ConvertToBase64(
-        indices,
-        Dynamsoft.DWT.EnumDWT_ImageType.IT_PDF,
-        (base64) => {
-          showProgress(false);
-          const blob = b64ToBlob(base64, "application/pdf");
-          const sizeMB = (blob.size / 1024 / 1024).toFixed(1);
+    //   DWTObject.ConvertToBase64(
+    //     indices,
+    //     Dynamsoft.DWT.EnumDWT_ImageType.IT_PDF,
+    //     (base64) => {
+    //       showProgress(false);
+    //       const blob = b64ToBlob(base64, "application/pdf");
+    //       const sizeMB = (blob.size / 1024 / 1024).toFixed(1);
           
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `scan_${new Date().toISOString().slice(0,10)}_${sizeMB}MB.pdf`;
-          a.click();
-          URL.revokeObjectURL(url);
+    //       const url = URL.createObjectURL(blob);
+    //       const a = document.createElement('a');
+    //       a.href = url;
+    //       a.download = `scan_${new Date().toISOString().slice(0,10)}_${sizeMB}MB.pdf`;
+    //       a.click();
+    //       URL.revokeObjectURL(url);
           
-          setStatus(`PDF berhasil diunduh (${sizeMB}MB)`, 'success');
-        },
-        (code, msg) => {
-          showProgress(false);
-          setStatus("Export gagal", 'error');
-          alert("Export gagal: " + msg);
-        }
-      );
-    });
+    //       setStatus(`PDF berhasil diunduh (${sizeMB}MB)`, 'success');
+    //     },
+    //     (code, msg) => {
+    //       showProgress(false);
+    //       setStatus("Export gagal", 'error');
+    //       alert("Export gagal: " + msg);
+    //     }
+    //   );
+    // });
 
     // Go to Review button
     document.getElementById("btnGoReview").addEventListener("click", async () => {
