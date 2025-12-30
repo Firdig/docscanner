@@ -6,12 +6,12 @@
             <div class="flex items-center gap-3">
                 {{-- Logo --}}
                 <div class="w-10 h-10">
-                    <img src="{{ asset('logo-dinas-pendidikan-batu.png') }}" 
+                    <img src="{{ asset('logodocvault.png') }}" 
                         alt="Logo" 
                         class="w-10 h-10 rounded-lg object-cover">
                 </div>
             <div>
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dinas Pendidikan Kota Batu</h2>
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">Document Scanner & Archive Digital</h2>
                 <p class="text-sm text-gray-500">Menu Utama</p>
             </div>
         </div>

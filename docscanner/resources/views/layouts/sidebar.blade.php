@@ -5,10 +5,10 @@
 
     {{-- Brand / Logo --}}
     <div class="flex items-center gap-3 px-5 h-16 border-b border-blue-800">
-        <img src="/logo-dinas-pendidikan-batu.png" class="h-10 w-10 rounded-md bg-white object-cover" alt="Logo">
+        <img src="/logodocvault.png" class="h-10 w-10 rounded-md bg-white object-cover" alt="Logo">
         <div class="leading-tight">
-            <div class="font-semibold">Dinas Pendidikan Kota Batu</div>
-            <div class="text-xs text-blue-200">DocScanner</div>
+            <div class="font-semibold">Document Scanner & Archive Digital</div>
+            <div class="text-xs text-blue-200">DocVault</div>
         </div>
     </div>
 

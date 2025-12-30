@@ -155,7 +155,7 @@
     };
 
     // ========== WEBTWAIN CONFIGURATION ==========
-    Dynamsoft.DWT.ProductKey = "t01938AUAABIPFNIR6bNfLqnn3kMLYRRzeUIvxmZGjjQ16xA7fV9v743vRFeNbs2j4RE+5ZwisKodz8M/QZbI8wABlOq7EFXjyskLnDLfKTTfiQVOvuUkcmlqc7ZV2hc3cABeCZDjORwAaiCfpQHeel+9MhQAjwAZADI6A0bA6S188HUdvJiMPqb/JfTMyQucMt9ZF8gcJxY4+ZbTF4ixpDZ/2y0XCOqXUwA8AuQUwO8j6wqEWoBHgHSANrDKkXwBZcYrnA==;t01908AUAAKmXXgjmfCgNUpvM5h/NhQT4ACotaPdgy3Lsk96PUy1UF1obVTkBVV7LlRYmFDrlUSxWYyQEO71o2ef4HmPRvZu4cvICp8x3Cs13YoGTbzmJXOrafNoqzYsTOACvBMhxHQ4ANZDX0gBvvY9eGQqAR4AMABmtASPgdBf9z2dqA1J//edAo5MXOGW+sw7IHCcWOPmW0wfEWFKb3+2WA4L65hQAjwA5BfB7yLqAUAvwCJAO0AZWOZIvQ/4rhw==";
+    Dynamsoft.DWT.ProductKey = "t01938AUAABIPFNIR6bNfLqnn3kMLYRRzeUIvxmZGjjQ16xA7fV9v743vRFeNbs2j4RE+5ZwisKodz8M/QZbI8wABlOq7EFXjyskLnDLfKTTfiQVOvuUkcmlqc7ZV2hc3cABeCZDjORwAaiCfpQHeel+9MhQAjwAZADI6A0bA6S188HUdvJiMPqb/JfTMyQucMt9ZF8gcJxY4+ZbTF4ixpDZ/2y0XCOqXUwA8AuQUwO8j6wqEWoBHgHSANrDKkXwBZcYrnA==;t01908AUAAKmXXgjmfCgNUpvM5h/NhQT4ACotaPdgy3Lsk96PUy1UF1obVTkBVV7LlRYmFDrlUSxWYyQEO71o2ef4HmPRvZu4cvICp8x3Cs13YoGTbzmJXOrafNoqzYsTOACvBMhxHQ4ANZDX0gBvvY9eGQqAR4AMABmtASPgdBf9z2dqA1J//edAo5MXOGW+sw7IHCcWOPmW0wfEWFKb3+2WA4L65hQAjwA5BfB7yLqAUAvwCJAO0AZWOZIvQ/4rhw==t0201EQYAAEigZ50npGMeHmdnLcOOYmFWPGtPxH1rFgXZnaLZ5PpgKgegKZO73MF+l8dWJ6r6gBwwoAICP9skGlhL0sP0n28RrzunNHBqfacX13WygVMeOYHRfw7htM0xzg+QHZjCZJ/r8AWYAmEtF2C2Z++dIQKkBGgB0NIaWAKyu3DJlzR5x+9vTv870JxTGji1vjMtkDpONnDKI6crkG6A2dxut1AgTG9OBEgJ0Czg5yUyBYIrICVAs8B8qWKJAHQ9etjBvAFNvz6m";
     Dynamsoft.DWT.ResourcesPath = "https://unpkg.com/dwt/dist";
     Dynamsoft.DWT.ServiceInstallerLocation = "https://demo.dynamsoft.com/DWT/Resources/dist/";
     Dynamsoft.DWT.UseLocalService = true;
@@ -454,53 +454,53 @@
     });
 
     // Download PDF button
-    document.getElementById("btnDownloadPdf").addEventListener("click", () => {
-      if (!DWTObject || DWTObject.HowManyImagesInBuffer === 0) {
-        alert("Belum ada halaman.");
-        return;
-      }
+    // document.getElementById("btnDownloadPdf").addEventListener("click", () => {
+    //   if (!DWTObject || DWTObject.HowManyImagesInBuffer === 0) {
+    //     alert("Belum ada halaman.");
+    //     return;
+    //   }
 
-      const totalPages = DWTObject.HowManyImagesInBuffer;
-      const estimatedSize = totalPages * getEstimatedPageSize(document.getElementById('scanQuality').value);
+    //   const totalPages = DWTObject.HowManyImagesInBuffer;
+    //   const estimatedSize = totalPages * getEstimatedPageSize(document.getElementById('scanQuality').value);
       
-      if (estimatedSize > 10 * 1024 * 1024) {
-        if (!confirm(`File berukuran besar (~${(estimatedSize/1024/1024).toFixed(1)}MB). Lanjutkan download?`)) {
-          return;
-        }
-      }
+    //   if (estimatedSize > 10 * 1024 * 1024) {
+    //     if (!confirm(`File berukuran besar (~${(estimatedSize/1024/1024).toFixed(1)}MB). Lanjutkan download?`)) {
+    //       return;
+    //     }
+    //   }
 
-      setStatus("Membuat PDF...", 'info');
-      showProgress(true, 'Generating PDF...', 0);
+    //   setStatus("Membuat PDF...", 'info');
+    //   showProgress(true, 'Generating PDF...', 0);
 
-      const indices = [];
-      for (let i = 0; i < totalPages; i++) {
-        indices.push(i);
-      }
+    //   const indices = [];
+    //   for (let i = 0; i < totalPages; i++) {
+    //     indices.push(i);
+    //   }
 
-      DWTObject.ConvertToBase64(
-        indices,
-        Dynamsoft.DWT.EnumDWT_ImageType.IT_PDF,
-        (base64) => {
-          showProgress(false);
-          const blob = b64ToBlob(base64, "application/pdf");
-          const sizeMB = (blob.size / 1024 / 1024).toFixed(1);
+    //   DWTObject.ConvertToBase64(
+    //     indices,
+    //     Dynamsoft.DWT.EnumDWT_ImageType.IT_PDF,
+    //     (base64) => {
+    //       showProgress(false);
+    //       const blob = b64ToBlob(base64, "application/pdf");
+    //       const sizeMB = (blob.size / 1024 / 1024).toFixed(1);
           
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `scan_${new Date().toISOString().slice(0,10)}_${sizeMB}MB.pdf`;
-          a.click();
-          URL.revokeObjectURL(url);
+    //       const url = URL.createObjectURL(blob);
+    //       const a = document.createElement('a');
+    //       a.href = url;
+    //       a.download = `scan_${new Date().toISOString().slice(0,10)}_${sizeMB}MB.pdf`;
+    //       a.click();
+    //       URL.revokeObjectURL(url);
           
-          setStatus(`PDF berhasil diunduh (${sizeMB}MB)`, 'success');
-        },
-        (code, msg) => {
-          showProgress(false);
-          setStatus("Export gagal", 'error');
-          alert("Export gagal: " + msg);
-        }
-      );
-    });
+    //       setStatus(`PDF berhasil diunduh (${sizeMB}MB)`, 'success');
+    //     },
+    //     (code, msg) => {
+    //       showProgress(false);
+    //       setStatus("Export gagal", 'error');
+    //       alert("Export gagal: " + msg);
+    //     }
+    //   );
+    // });
 
     // Go to Review button
     document.getElementById("btnGoReview").addEventListener("click", async () => {
